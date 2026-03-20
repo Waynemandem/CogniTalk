@@ -1,15 +1,23 @@
-import './index.css'
-import Card from './components/Card'
-import Navbar from './components/Navbar'
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-  
   return (
-    <div>
-      <Navbar />
-      <Card />
-    </div>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/dashboard" element={
+          <ProtectedRoute>
+            <Dashboard />
+            </ProtectedRoute>} 
+            />
+        <Route path="/" element={<Navigate to="/login" />} />    
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
-export default App
