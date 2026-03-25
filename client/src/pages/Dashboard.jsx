@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import supabase from './services/supabaseClient';
+import supabase from '../services/supabase.js';
 import { useNavigate } from "react-router-dom";
-import { Button }  from '@/components/ui/Button';
+import { Button }  from '../components/ui/Button';
 
 
 function Dashboard() {

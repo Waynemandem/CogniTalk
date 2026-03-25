@@ -9,5 +9,19 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Waynemandem/CogniTalk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Waynemandem/CogniTalk/issues"
+  },
+  "homepage": "https://github.com/Waynemandem/CogniTalk#readme",
+  "dependencies": {
+    "path": "^0.12.7"
+  }
 }

@@ -1,6 +1,6 @@
-import { Button } from  "@/components/ui/Button";
+import { Button } from  "../components/ui/Button";
 import { useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import supabase from '../services/supabase';
 import { useNavigate, Link } from "react-router-dom";
 
 
@@ -26,7 +26,7 @@ function Login() {
   }
 
     return(
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen items-center justify-center">
             <p className="text-2xl font-bold text-center">CogniTalk</p>
                        <p>Welcome back!</p>
             

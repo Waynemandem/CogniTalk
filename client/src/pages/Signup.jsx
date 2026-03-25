@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import supabase from '../services/supabase';
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/Button";
+import { Button } from "../components/ui/Button";
 
 
 
@@ -27,12 +27,25 @@ async function handleSubmit(e) {
   }
 }
     return(
-        <div className="min-h-screen flex items-center justify-center">
-            <p className="text-2xl font-bold text-center">CogniTalk</p>
-           <p>Create an account</p>
+        <div className="min-h-screen items-center justify-center bg-gray-100 px-4">
+            <p className="text-2xl font-bold text-center"
+            >
+              CogniTalk</p>
+           <p className="text-2xl font-bold text-center mb-6"
+           >
+            Create an account</p>
 
-        <Button onClick={() => {}}>Sign up with Google</Button>
-        <Button onClick={() => {}}>Sign up with Twitter</Button>
+        <Button 
+        onClick={() => {}} 
+        className={`w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 transition`}
+        >
+          Sign up with Google</Button>
+        
+        <Button 
+        onClick={() => {}} 
+        className={`w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-red-600 transition`}
+        >
+          Sign up with Twitter</Button>
 
         <p className="text-sm text-gray-500">or</p>
 
@@ -44,6 +57,7 @@ async function handleSubmit(e) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-black"
           />
           <input
             type="password"

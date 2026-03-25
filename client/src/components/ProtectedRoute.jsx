@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import supabase from "../services/supabase";
+import supabase from '../services/supabase';
 
 function ProtectedRoute({ children }) {
   const [user, setUser] = useState(undefined); // undefined = still loading
