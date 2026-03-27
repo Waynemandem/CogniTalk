@@ -29,7 +29,7 @@ useEffect(() => {
   loadDashboard();
 }, []);
 
-   if (loading) return <p>Loading...</p>;
+   if (loading) return <p className="p-6 text-center">Loading...</p>;
 
    async function handleSignOut() {
     await supabase.auth.signOut();
@@ -38,20 +38,40 @@ useEffect(() => {
 
 
   return (
-    <div className="dashboard">
+    <div className="min-h-screen items-center bg-gray-100 p-4">
+      <div className="max-w-4xl mx-auto bg-white shadow-md rounded-2xl p-6">
+        <div className="flex justify-between items-center mb-6">
       <h1 className="text-2xl font-bold">CogniTalk</h1>
+
       <button
-        className="bg-red-500 text-white px-4 py-2 rounded"
+        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
         onClick={handleSignOut}
       >
         Sign Out
       </button>
-      <button 
-      className="bg-blue-500 text-white px-4 py-2 rounded"
-      onClick={() => navigate("/recorder")}
-      >Start Recording</button>
+
+      {/* welcome section */}
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold">
+          Welcome back{user?.email ? `, ${user.email}` : "" }
+        </h2>
+        <p className="text-gray-500 text-sm">
+          Track and review your recent recording sessions.
+        </p>
+      </div>
+
+      {/* Actions */}
+      <div className="mb-8">
+          <button 
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              onClick={() => navigate("/recorder")}
+          >
+            Start Recording</button>
+      </div>
+
+      {/* sessions section */}
       <h2 
-      className="text-xl font-semibold"
+      className="font-semibold"
       >Recent Sessions</h2>
       {sessions.length === 0? (
         <p>No sessions yet</p>) : 
@@ -60,14 +80,12 @@ useEffect(() => {
             <p>{session.created_at}</p>
           </div>
         ))}
+        </div>
     </div>
-
+   </div> 
   )
-
-
-
-
 }
 
 
-export default Dashboard;
+
+export default Dashboard
