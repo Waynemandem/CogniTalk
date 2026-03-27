@@ -38,7 +38,8 @@ useEffect(() => {
 
 
   return (
-    <div className="min-h-screen items-center bg-gray-100 p-4">
+    <div className="min-h-screen bg-gray-100 p-6">
+      {/* Header */}
       <div className="max-w-4xl mx-auto bg-white shadow-md rounded-2xl p-6">
         <div className="flex justify-between items-center mb-6">
       <h1 className="text-2xl font-bold">CogniTalk</h1>
@@ -70,6 +71,8 @@ useEffect(() => {
       </div>
 
       {/* sessions section */}
+      <div>
+        <div className="flex justify-between items-center mb-3">
       <h2 
       className="font-semibold"
       >Recent Sessions</h2>
@@ -80,6 +83,11 @@ useEffect(() => {
             <p>{session.created_at}</p>
           </div>
         ))}
+        </div>
+        </div>
+
+
+
         </div>
     </div>
    </div> 
