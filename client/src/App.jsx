@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Recorder from "./pages/Recorder";
 
 function App() {
   return (
@@ -15,8 +16,13 @@ function App() {
           <ProtectedRoute>
             <Dashboard />
             </ProtectedRoute>} 
-            />
-        <Route path="/" element={<Navigate to="/login" />} />    
+            />  
+        <Route path="/recorder" element={
+          <ProtectedRoute>
+            <Recorder />
+          </ProtectedRoute>  
+        }  
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -1,125 +1,124 @@
-import { Button } from  "../components/ui/Button";
 import { useState } from "react";
-import supabase from '../services/supabase';
 import { useNavigate, Link } from "react-router-dom";
+import supabase from "../services/supabase.js";
 
+export default function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-function Login() {
-    const navigate = useNavigate();
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] =useState("");
-    const [loading, setLoading] = useState(false);
-
-    async function handleSubmit(e) {
-  e.preventDefault();
-   setLoading(true);
-   const {error} = await supabase.auth.signInWithPassword({ email, password});
-   if (error) {
-    setError(error.message);
-    setLoading(false);
-   } else {
-    setLoading(false);
-    navigate("/dashboard");
-   }
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      setLoading(false);
+      navigate("/dashboard");
+    }
   }
 
-    return(
-        <div className="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 bg-gray-50">
-      
-      {/* Header */}
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm text-center">
-        <h1 className="text-2xl font-bold text-gray-900">
-          CogniTalk
-        </h1>
-        <h2 className="mt-6 text-lg font-semibold text-gray-700">
-          Welcome back
-        </h2>
-        <p className="text-sm text-gray-500">
-          Sign in to continue
-        </p>
-      </div>
+  return (
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
 
-      {/* Form Container */}
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md bg-white p-8 rounded-xl shadow-lg space-y-6">
-        
-        {/* Social Buttons */}
-        <div className="space-y-3 mb-6">
-          <Button 
-          onClick={() => {}} 
-          lassName="w-full bg-red-500 hover:bg-red-600">Login with Google</Button>
-          <Button 
-          onClick={() => {}} 
-          lassName="w-full bg-blue-500 hover:bg-blue-600">Login with Twitter</Button>
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-black rounded-xl mb-4">
+            <span className="text-white text-xl">🎙</span>
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">CogniTalk</h1>
+          <p className="text-gray-500 text-sm mt-1">Welcome back</p>
         </div>
 
-        {/* Divider */}
-        <div className="flex items-center gap-3">
-          <div className="h-px flex-1 bg-gray-300"></div>
-          <p className="text-sm text-gray-500">or</p>
-          <div className="h-px flex-1 bg-gray-300"></div>
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+
+          {/* Social Buttons */}
+          <div className="flex flex-col gap-3 mb-6">
+            <button
+              onClick={() => {}}
+              className="flex items-center justify-center gap-3 w-full border border-gray-200 rounded-xl py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
+              Continue with Google
+            </button>
+            <button
+              onClick={() => {}}
+              className="flex items-center justify-center gap-3 w-full border border-gray-200 rounded-xl py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              Continue with X (Twitter)
+            </button>
+          </div>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex-1 h-px bg-gray-100" />
+            <span className="text-xs text-gray-400 font-medium">or</span>
+            <div className="flex-1 h-px bg-gray-100" />
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                autoComplete="email"
+                required
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                required
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition"
+              />
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl px-4 py-3">
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-black text-white rounded-xl py-2.5 text-sm font-medium hover:bg-gray-800 disabled:opacity-50 transition-colors mt-1"
+            >
+              {loading ? "logging in..." : "log in"}
+            </button>
+          </form>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          
-          {/* Email */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter your email"
-            />
-          </div>
-
-          {/* Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              placeholder="Enter your password"
-            />
-          </div>
-
-          {/* Error */}
-          {error && (
-            <p className="text-sm text-red-500">{error}</p>
-          )}
-
-          {/* Submit */}
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Logging in..." : "Log in"}
-          </Button>
-        </form>
-
-        {/* Footer */}
-        <p className="mt-6 text-center text-sm text-gray-500">
-          Don’t have an account?{" "}
-          <Link
-            to="/signup"
-            className="font-semibold text-indigo-600 hover:text-indigo-500"
-          >
+        {/* Bottom link */}
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Don't have an account?{" "}
+          <Link to="/signup" className="text-black font-medium hover:underline">
             Sign up
           </Link>
         </p>
-
       </div>
     </div>
-    )
+  );
 }
 
-
-export default Login;
