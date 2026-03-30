@@ -10,14 +10,23 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Default routes */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={
+        <Route 
+        path="/dashboard" 
+        element={
           <ProtectedRoute>
             <Dashboard />
-            </ProtectedRoute>} 
-            />  
-        <Route path="/recorder" element={
+            </ProtectedRoute>
+            } 
+            />
+              
+        <Route 
+        path="/recorder" 
+        element={
           <ProtectedRoute>
             <Recorder />
           </ProtectedRoute>  
