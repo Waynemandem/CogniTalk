@@ -1,5 +1,7 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import analyzeRoute from "./routes/analyze.js";
 
 const app = express();
 app.use(cors());
@@ -9,7 +11,9 @@ app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-const PORT = 3001;
+app.use("/api/analyze", analyzeRoute);
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

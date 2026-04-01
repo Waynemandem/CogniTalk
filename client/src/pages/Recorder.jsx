@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAudioRecorder } from "../hooks/useAudioRecorder";
+import supabase from "../services/supabase.js";
 
 export default function Recorder() {
   const navigate = useNavigate();
@@ -35,8 +36,12 @@ export default function Recorder() {
       formData.append("audio", audioBlob, "recording.webm");
       formData.append("duration", String(duration));
 
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch("http://localhost:3001/api/analyze", {
         method: "POST",
+        headers: session?.access_token
+          ? { Authorization: `Bearer ${session.access_token}` }
+          : {},
         body: formData,
       });
 
