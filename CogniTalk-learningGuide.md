@@ -30,7 +30,7 @@
 
 ## What We're Building
 
-An ** CogniTalk Ai Coach ** web app. Here's what a user can do:
+An ** CogniTalk Ai Coach ** web app. Here's what a user can do in the app:
 
 1. Create an account and log in
 2. Record themselves speaking (using their microphone)
