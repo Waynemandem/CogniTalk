@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import analyzeRoute from "./routes/analyze.js";
+import paymentRoute from "./routes/payment.js";
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,7 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api/analyze", analyzeRoute);
+app.use("/api/payment", paymentRoute);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

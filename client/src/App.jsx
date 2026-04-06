@@ -7,6 +7,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Recorder from "./pages/Recorder";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import History from "./pages/History";
+import Pricing from "./pages/Pricing";
 
 function App() {
   return (
@@ -35,6 +37,22 @@ function App() {
             <Recorder />
           </ProtectedRoute>  
         }  
+        />
+        <Route
+        path="/history"
+        element={
+          <ProtectedRoute>
+            <History />
+          </ProtectedRoute>
+        }
+        />
+        <Route 
+        path="/pricing" 
+        element={
+          <ProtectedRoute>
+            <Pricing />
+          </ProtectedRoute>
+        }
         />
       </Routes>
     </BrowserRouter>
