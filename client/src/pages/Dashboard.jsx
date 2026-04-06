@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import supabase from "../services/supabase.js";
+import { useSubscription } from "../hooks/useSubscription.js";
 
 const S = {
   root: { minHeight: "100vh", background: "linear-gradient(160deg, #0d1117 0%, #161b27 60%, #0d1117 100%)", fontFamily: "'Nunito', sans-serif", color: "#fff" },
@@ -13,7 +14,6 @@ const S = {
   navLink: { fontSize: "13px", color: "rgba(255,255,255,0.4)", textDecoration: "none", padding: "6px 14px", borderRadius: "8px" },
   signOutBtn: { fontSize: "13px", color: "rgba(255,255,255,0.4)", padding: "6px 14px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.08)", background: "transparent", cursor: "pointer", fontFamily: "'Nunito', sans-serif" },
   main: { maxWidth: "1100px", margin: "0 auto", padding: "3rem 2rem", display: "flex", flexDirection: "column", gap: "2.5rem" },
-  greeting: { display: "flex", flexDirection: "column", gap: "6px" },
   greetingH1: { fontSize: "2rem", fontWeight: "700", color: "#fff", letterSpacing: "-0.5px", margin: 0 },
   greetingSub: { fontSize: "14px", color: "rgba(255,255,255,0.35)", margin: 0 },
   statsRow: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px" },
@@ -21,12 +21,24 @@ const S = {
   statLabel: { fontSize: "11px", fontWeight: "600", letterSpacing: "0.08em", color: "rgba(255,255,255,0.3)", textTransform: "uppercase", marginBottom: "8px" },
   statValue: { fontSize: "1.75rem", fontWeight: "700", color: "#fff", letterSpacing: "-0.5px" },
   statSub: { fontSize: "12px", color: "rgba(255,255,255,0.3)", marginTop: "4px" },
+  // Upgrade banner
+  upgradeBanner: { background: "linear-gradient(135deg, rgba(251,191,36,0.08) 0%, rgba(239,68,68,0.08) 100%)", border: "1px solid rgba(251,191,36,0.25)", borderRadius: "20px", padding: "1.5rem 2rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1.5rem" },
+  upgradeLeft: { display: "flex", alignItems: "center", gap: "1rem" },
+  upgradeIcon: { width: "40px", height: "40px", borderRadius: "50%", background: "rgba(251,191,36,0.15)", border: "1px solid rgba(251,191,36,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: "18px" },
+  upgradeTitle: { fontSize: "15px", fontWeight: "700", color: "#fff", margin: "0 0 3px" },
+  upgradeDesc: { fontSize: "13px", color: "rgba(255,255,255,0.4)", margin: 0 },
+  upgradeBtn: { background: "#fbbf24", color: "#1a1a2e", border: "none", borderRadius: "50px", padding: "10px 24px", fontSize: "13px", fontWeight: "700", cursor: "pointer", fontFamily: "'Nunito', sans-serif", whiteSpace: "nowrap", flexShrink: 0 },
+  // Pro badge
+  proBadge: { background: "rgba(76,110,245,0.15)", border: "1px solid rgba(76,110,245,0.3)", borderRadius: "20px", padding: "1rem 1.5rem", display: "flex", alignItems: "center", gap: "10px" },
+  proBadgeText: { fontSize: "13px", color: "rgba(255,255,255,0.6)", margin: 0 },
+  // CTA
   ctaBanner: { background: "rgba(76,110,245,0.12)", border: "1px solid rgba(76,110,245,0.25)", borderRadius: "20px", padding: "2rem 2.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "2rem" },
   ctaLeft: { display: "flex", alignItems: "center", gap: "1.25rem" },
   ctaMicCircle: { width: "52px", height: "52px", borderRadius: "50%", background: "rgba(76,110,245,0.2)", border: "1px solid rgba(76,110,245,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
   ctaTitle: { fontSize: "17px", fontWeight: "700", color: "#fff", margin: "0 0 4px" },
   ctaDesc: { fontSize: "13px", color: "rgba(255,255,255,0.4)", margin: 0 },
   ctaBtn: { background: "#4c6ef5", color: "#fff", border: "none", borderRadius: "50px", padding: "12px 28px", fontSize: "14px", fontWeight: "700", cursor: "pointer", fontFamily: "'Nunito', sans-serif", whiteSpace: "nowrap", flexShrink: 0 },
+  ctaBtnDisabled: { background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.3)", border: "none", borderRadius: "50px", padding: "12px 28px", fontSize: "14px", fontWeight: "700", cursor: "not-allowed", fontFamily: "'Nunito', sans-serif", whiteSpace: "nowrap", flexShrink: 0 },
   sectionLabel: { fontSize: "11px", fontWeight: "700", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.3)", marginBottom: "1rem" },
   reportCard: { background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "20px", padding: "1.75rem 2rem" },
   reportGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem", marginBottom: "1.5rem" },
@@ -66,6 +78,7 @@ export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { plan, sessionsToday, canRecord, sessionsRemaining, isProPlan } = useSubscription();
 
   useEffect(() => {
     async function loadDashboard() {
@@ -73,16 +86,10 @@ export default function Dashboard() {
       const { data, error } = await supabase
         .from("sessions")
         .select(`
-          id,
-          duration_seconds,
-          created_at,
+          id, duration_seconds, created_at,
           speech_reports (
-            clarity_score,
-            pace_wpm,
-            filler_count,
-            filler_words,
-            word_count,
-            transcript
+            clarity_score, pace_wpm, filler_count,
+            filler_words, word_count, transcript
           )
         `)
         .eq("user_id", user.id)
@@ -130,16 +137,20 @@ export default function Dashboard() {
     : latestReport.clarity_score >= 8 ? "#4ade80"
     : latestReport.clarity_score >= 5 ? "#fbbf24" : "#f87171";
 
+  const limitReached = !canRecord && !isProPlan;
+
   return (
     <div style={S.root}>
       <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
       <style>{`
         @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-        .fade-up{animation:fadeUp 0.5s ease both}
-        .fade-up-1{animation-delay:0.05s}.fade-up-2{animation-delay:0.12s}
-        .fade-up-3{animation-delay:0.2s}.fade-up-4{animation-delay:0.28s}.fade-up-5{animation-delay:0.36s}
+        .fu{animation:fadeUp 0.5s ease both}
+        .fu1{animation-delay:0.05s}.fu2{animation-delay:0.12s}
+        .fu3{animation-delay:0.2s}.fu4{animation-delay:0.28s}.fu5{animation-delay:0.36s}
         .nav-lnk:hover{color:rgba(255,255,255,0.8)!important;background:rgba(255,255,255,0.05)!important}
         .s-row:hover{background:rgba(255,255,255,0.05)!important}
+        .upgrade-btn:hover{background:#f59e0b!important}
+        .cta-btn:hover{background:#3b5bdb!important}
       `}</style>
 
       {/* Navbar */}
@@ -158,13 +169,41 @@ export default function Dashboard() {
 
       <main style={S.main}>
         {/* Greeting */}
-        <div className="fade-up fade-up-1" style={S.greeting}>
+        <div className="fu fu1" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
           <h1 style={S.greetingH1}>Good day, {user?.email?.split("@")[0]} 👋</h1>
           <p style={S.greetingSub}>Ready to work on your speaking skills?</p>
         </div>
 
+        {/* Upgrade banner — shown when limit reached */}
+        {limitReached && (
+          <div className="fu fu1" style={S.upgradeBanner}>
+            <div style={S.upgradeLeft}>
+              <div style={S.upgradeIcon}>⚡</div>
+              <div>
+                <p style={S.upgradeTitle}>You've used all 3 free sessions today</p>
+                <p style={S.upgradeDesc}>Upgrade to Pro for unlimited sessions — ₦5,000/month</p>
+              </div>
+            </div>
+            <button
+              className="upgrade-btn"
+              onClick={() => navigate("/pricing")}
+              style={S.upgradeBtn}
+            >
+              Upgrade to Pro →
+            </button>
+          </div>
+        )}
+
+        {/* Pro badge — shown when on pro plan */}
+        {isProPlan && (
+          <div className="fu fu1" style={S.proBadge}>
+            <span style={{ fontSize: "16px" }}>⭐</span>
+            <p style={S.proBadgeText}>You're on the <strong style={{ color: "#4c6ef5" }}>Pro plan</strong> — unlimited sessions active</p>
+          </div>
+        )}
+
         {/* Stats */}
-        <div className="fade-up fade-up-2" style={S.statsRow}>
+        <div className="fu fu2" style={S.statsRow}>
           <div style={S.statCard}>
             <p style={S.statLabel}>Total Sessions</p>
             <p style={S.statValue}>{totalSessions}</p>
@@ -176,27 +215,48 @@ export default function Dashboard() {
             <p style={S.statSub}>across all sessions</p>
           </div>
           <div style={S.statCard}>
-            <p style={S.statLabel}>Avg Pace</p>
-            <p style={S.statValue}>{avgPace}<span style={{ fontSize: "1rem", color: "rgba(255,255,255,0.3)" }}>{avgPace !== "—" ? " wpm" : ""}</span></p>
-            <p style={S.statSub}>words per minute</p>
+            <p style={S.statLabel}>
+              {isProPlan ? "Today's Sessions" : `Sessions Today`}
+            </p>
+            <p style={S.statValue}>
+              {isProPlan ? sessionsToday : `${sessionsToday}`}
+              <span style={{ fontSize: "1rem", color: "rgba(255,255,255,0.3)" }}>
+                {!isProPlan ? "/3" : ""}
+              </span>
+            </p>
+            <p style={S.statSub}>
+              {isProPlan ? "unlimited remaining" : `${sessionsRemaining} remaining today`}
+            </p>
           </div>
         </div>
 
         {/* CTA */}
-        <div className="fade-up fade-up-3" style={S.ctaBanner}>
+        <div className="fu fu3" style={S.ctaBanner}>
           <div style={S.ctaLeft}>
             <div style={S.ctaMicCircle}><MicIcon size={22} /></div>
             <div>
               <p style={S.ctaTitle}>Start a new session</p>
-              <p style={S.ctaDesc}>Record yourself speaking and get instant AI feedback</p>
+              <p style={S.ctaDesc}>
+                {canRecord
+                  ? "Record yourself speaking and get instant AI feedback"
+                  : "You've reached your daily limit — upgrade for unlimited sessions"}
+              </p>
             </div>
           </div>
-          <button onClick={() => navigate("/recorder")} style={S.ctaBtn}>Start Recording</button>
+          {canRecord ? (
+            <button className="cta-btn" onClick={() => navigate("/recorder")} style={S.ctaBtn}>
+              Start Recording
+            </button>
+          ) : (
+            <button onClick={() => navigate("/pricing")} style={{ ...S.ctaBtn, background: "#fbbf24", color: "#1a1a2e" }}>
+              Upgrade to Record
+            </button>
+          )}
         </div>
 
         {/* Latest Result */}
         {latestReport && (
-          <div className="fade-up fade-up-4">
+          <div className="fu fu4">
             <p style={S.sectionLabel}>Latest Result</p>
             <div style={S.reportCard}>
               <div style={S.reportGrid}>
@@ -236,7 +296,7 @@ export default function Dashboard() {
         )}
 
         {/* Recent Sessions */}
-        <div className="fade-up fade-up-5">
+        <div className="fu fu5">
           <p style={S.sectionLabel}>Recent Sessions</p>
           {sessions.length === 0 ? (
             <div style={S.emptyState}>
