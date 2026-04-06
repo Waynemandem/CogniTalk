@@ -1,21 +1,4 @@
-import OpenAI from "openai";
-import { writeFileSync, unlinkSync, createReadStream } from "fs";
-import { join } from "path";
-import { tmpdir } from "os";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
+// server/services/transcribe.js  — TEMPORARY MOCK
 export async function transcribeAudio(buffer) {
-  const tmpPath = join(tmpdir(), `cognitalk_${Date.now()}.webm`);
-  writeFileSync(tmpPath, buffer);
-
-  try {
-    const response = await openai.audio.transcriptions.create({
-      file: createReadStream(tmpPath),
-      model: "whisper-1",
-    });
-    return response.text;
-  } finally {
-    unlinkSync(tmpPath);
-  }
+  return "Um, today I want to talk about, uh, the importance of clear communication. You know, when we speak, like, we should try to be as clear as possible. Basically, good speakers avoid filler words and maintain a steady pace.";
 }
