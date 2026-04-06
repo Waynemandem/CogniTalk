@@ -57,7 +57,7 @@ router.post("/", upload.single("audio"), async (req, res) => {
             suggestions: result.suggestions,
           });
 
-        if (reportErr) console.error("Report insert error:", reportErr.message);
+        if (reportErr) console.error("Report insert error:", JSON.stringify(reportErr));
       }
     }
 
