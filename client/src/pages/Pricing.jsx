@@ -114,7 +114,7 @@ export default function Pricing() {
         try {
           // Verify payment with our backend
           const { data: { session } } = await supabase.auth.getSession();
-          const res = await fetch("http://localhost:3001/api/payment/verify", {
+          const res = await fetch("https://cognitalk-server.onrender.com", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

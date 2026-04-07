@@ -123,7 +123,7 @@ export default function Recorder() {
       formData.append("audio", audioBlob, "recording.webm");
       formData.append("duration", String(duration));
       const { data: { session } } = await supabase.auth.getSession();
-      const res = await fetch("http://localhost:3001/api/analyze", {
+      const res = await fetch("https://cognitalk-server.onrender.com", {
         method: "POST",
         headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {},
         body: formData,
