@@ -104,7 +104,7 @@ export default function Pricing() {
     setError("");
 
     const handler = window.PaystackPop.setup({
-      key: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
+      API_URL: import.meta.env.VITE_PAYSTACK_PUBLIC_KEY,
       email: user.email,
       amount: 500000, // ₦5,000 in kobo
       currency: "NGN",
@@ -114,7 +114,7 @@ export default function Pricing() {
         try {
           // Verify payment with our backend
           const { data: { session } } = await supabase.auth.getSession();
-          const res = await fetch("https://cognitalk-server.onrender.com", {
+          const res = await fetch("fetch(`${API_URL}/api/payment/verify`)", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

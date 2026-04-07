@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAudioRecorder } from "../hooks/useAudioRecorder";
 import supabase from "../services/supabase.js";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 const S = {
   root: { minHeight: "100vh", background: "linear-gradient(160deg, #0d1117 0%, #161b27 60%, #0d1117 100%)", fontFamily: "'Nunito', sans-serif", color: "#fff" },
@@ -123,7 +124,7 @@ export default function Recorder() {
       formData.append("audio", audioBlob, "recording.webm");
       formData.append("duration", String(duration));
       const { data: { session } } = await supabase.auth.getSession();
-      const res = await fetch("https://cognitalk-server.onrender.com", {
+      const res = await fetch(`${API_URL}/api/analyze`, {
         method: "POST",
         headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {},
         body: formData,
