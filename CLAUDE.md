@@ -12,7 +12,7 @@ User speaks → Whisper transcribes → Azure scores pronunciation → GPT-4o gi
 - **Auth + DB:** Supabase
 - **Payments:** Paystack (with webhook/HMAC verification)
 - **APIs:** Whisper (transcription), GPT-4o (analysis), Azure Speech (pronunciation scoring), ElevenLabs (voice playback)
-- **Deploy:** Netlify (frontend), Vercel (backend)
+- **Deploy:** Vercel (frontend), Render (backend)
 
 ## Project Structure
 ```
